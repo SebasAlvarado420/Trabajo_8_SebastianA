@@ -38,13 +38,12 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             docker login -u '${{ secrets.DOCKER_USERNAME }}' -p '${{ secrets.DOCKER_PASSWORD }}'
-            if docker ps --all | grep regresion-lineal: then
+            if docker ps --all | grep -q regresion-lineal:; then
               docker stop regresion-lineal
               docker rm regresion-lineal
             fi
-            
             docker pull ${{ secrets.DOCKER_USERNAME }}/regresion-lineal:v1
             docker run -d --name regresion-lineal -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/regresion-lineal:v1
